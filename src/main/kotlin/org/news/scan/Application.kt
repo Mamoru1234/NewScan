@@ -14,7 +14,7 @@ import org.springframework.scheduling.annotation.EnableScheduling
 open class ApplicationConfig {
     @Bean
     open fun init(newsScanService: NewsScanService) = CommandLineRunner {
-        newsScanService.scheduleScan(12)
+//        newsScanService.scheduleScan(12)
     }
 }
 
