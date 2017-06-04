@@ -8,5 +8,6 @@ import org.springframework.stereotype.Component
 @Component
 @ConfigurationProperties("news.scan")
 open class NewsScanConfig(
-  var offsetLimit: Int = Int.MAX_VALUE
+  var offsetLimit: Int = Int.MAX_VALUE,
+  var pageSize: Int = 10
 )

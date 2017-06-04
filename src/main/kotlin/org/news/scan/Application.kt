@@ -16,7 +16,6 @@ open class ApplicationConfig {
 
   @Bean
   open fun run() = CommandLineRunner {
-//    println(documentRepository.findOne(UUID.randomUUID()))
   }
 }
 

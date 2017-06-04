@@ -1,10 +1,10 @@
-package org.news.scan.parser
+package org.news.scan.reader
 
 import java.time.LocalDate
 
 /**
  */
-data class ParsedDocument(
+data class RawDocument(
   val id: String,
   val creationDate: LocalDate,
   val content: String

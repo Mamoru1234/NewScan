@@ -12,9 +12,9 @@ data class DocumentEntity(
   @Id
   val id: String = UUID.randomUUID().toString(),
 
-  var created: LocalDate = LocalDate.now(),
-  @Lob
-  @Basic(fetch = FetchType.LAZY)
-  var content: String = ""
+  var lastUpdateDate: LocalDate = LocalDate.now(),
 
-  )
+  @OneToMany(fetch = FetchType.EAGER, mappedBy = "document")
+  var versions: List<DocumentVersionEntity>? = null
+
+)

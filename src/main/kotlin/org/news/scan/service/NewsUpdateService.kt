@@ -12,12 +12,12 @@ import java.util.concurrent.TimeUnit
 import javax.annotation.PostConstruct
 import javax.annotation.PreDestroy
 
-val LATEST_REQUEST = PageRequest(0, 1, Sort.Direction.DESC, "created")
+val LATEST_REQUEST = PageRequest(0, 1, Sort.Direction.DESC, "lastUpdateDate")
 
 @Component
 open class NewsScanService(
-  val newsService: NewsService,
-  val documentRepository: DocumentRepository
+  private val newsService: NewsService,
+  private val documentRepository: DocumentRepository
 ){
   companion object {
     val log by logger()
@@ -30,13 +30,21 @@ open class NewsScanService(
       try {
         val latestDate = documentRepository.findAll(LATEST_REQUEST)
           .lastOrNull()
-          ?.created
+          ?.lastUpdateDate
           ?: LocalDate.MIN
         newsService.checkForNewDocuments(latestDate)
       } catch (e: Throwable) {
         log.error("Error during check: ", e)
       }
-    } , 0, 10, TimeUnit.SECONDS)
+    } , 0, 1, TimeUnit.MINUTES)
+
+    scheduler.scheduleWithFixedDelay({
+      try {
+        newsService.checkForUpdates(documentRepository.findAll(LATEST_REQUEST).content)
+      } catch (e: Throwable) {
+        log.error("Error during update: ", e)
+      }
+    }, 10, 10, TimeUnit.SECONDS)
   }
 
   @PreDestroy

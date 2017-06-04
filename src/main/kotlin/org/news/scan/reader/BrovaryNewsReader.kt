@@ -1,4 +1,4 @@
-package org.news.scan.parser
+package org.news.scan.reader
 
 import org.jsoup.Jsoup
 import org.news.scan.extension.debug
@@ -19,7 +19,7 @@ val ID_PATTERN: Pattern = Pattern.compile("^/documents/(\\d+)\\.html")
 val CONTENT_SELECTOR = "#resSerch > div > div > div.bg1-content.col-md-8.col-sm-8"
 val DATE_LINE_SELECTOR = ".container .breadcrumb .active"
 
-fun parseDateLine(line:String):LocalDate {
+private fun parseDateLine(line:String):LocalDate {
   val semiIndex = line.lastIndexOf(",")
   if (semiIndex == -1) {
     return LocalDate.parse(line.toLowerCase(), FORMATTER)
@@ -29,12 +29,25 @@ fun parseDateLine(line:String):LocalDate {
 }
 
 @Component
-open class BrovaryNewsParser: NewsParser {
+open class BrovaryNewsReader : NewsReader {
   companion object {
-    val log by logger()
+    private val log by logger()
   }
 
-  override fun getDocuments(offset: Int):List<ParsedDocument> {
+  override fun getDocumentById(documentId: String): RawDocument {
+    val documentPage = Jsoup.connect("http://brovary-rada.gov.ua/documents/$documentId.html")
+      .get()
+//        TODO Error handling
+    val dateLine = documentPage.select(DATE_LINE_SELECTOR).last().text()
+    val content = documentPage.select(CONTENT_SELECTOR).last().text()
+    return RawDocument(
+      creationDate = parseDateLine(dateLine),
+      content = content,
+      id = documentId
+    )
+  }
+
+  override fun getDocuments(offset: Int):List<RawDocument> {
     log.debug {
       "Fetching documents with offset: $offset"
     }
@@ -50,12 +63,7 @@ open class BrovaryNewsParser: NewsParser {
           log.error("Wrong href: $href on offset: $offset")
           return@mapNotNull null
         }
-        val documentPage = Jsoup.connect("http://brovary-rada.gov.ua${it.attr("href")}")
-          .get()
-//        TODO Error handling
-        val dateLine = documentPage.select(DATE_LINE_SELECTOR).last().text()
-        val content = documentPage.select(CONTENT_SELECTOR).last().text()
-        ParsedDocument(creationDate = parseDateLine(dateLine), content = content, id = matcher.group(1))
+        getDocumentById(matcher.group(1))
       }
   }
 }
