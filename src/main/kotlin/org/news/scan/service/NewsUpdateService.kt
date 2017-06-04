@@ -37,22 +37,22 @@ open class NewsScanService(
   @PostConstruct
   fun init() {
     scheduler.scheduleWithFixedDelay(
-      this::checkForNewDocument,
+      this::checkForNewDocuments,
       0, 1, TimeUnit.HOURS
     )
 
     scheduler.scheduleWithFixedDelay(
-      updateCreator(Priority.HIGH),
+      createDocumentsUpdateTask(Priority.HIGH),
       30, 10, TimeUnit.MINUTES
     )
 
     scheduler.scheduleWithFixedDelay(
-      updateCreator(Priority.LOW),
+      createDocumentsUpdateTask(Priority.LOW),
       2, 5, TimeUnit.HOURS
     )
   }
 
-  fun checkForNewDocument() {
+  fun checkForNewDocuments() {
     try {
       val latestDate = documentRepository.findAll(LATEST_REQUEST)
         .lastOrNull()
@@ -64,7 +64,7 @@ open class NewsScanService(
     }
   }
 
-  fun updateCreator(priority: Priority): () -> Unit {
+  fun createDocumentsUpdateTask(priority: Priority): () -> Unit {
     val (startPeriod, endPeriod) = timePeriods[priority]!!
     return {
       try {
