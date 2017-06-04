@@ -7,11 +7,11 @@ import java.time.Period
 import java.util.concurrent.TimeUnit
 
 data class PriorityScheduleValues(
-  val startPeriod: Period,
-  val endPeriod: Period,
-  val unit: TimeUnit,
-  val initialDelay: Long,
-  val delay: Long
+  var startPeriod: Period,
+  var endPeriod: Period,
+  var unit: TimeUnit,
+  var initialDelay: Long,
+  var delay: Long
 )
 
 /**
@@ -31,7 +31,7 @@ open class NewsScanConfig(
     ),
     Priority.LOW to PriorityScheduleValues(
       startPeriod = Period.ofMonths(1),
-      endPeriod = Period.ofDays(3),
+      endPeriod = Period.ofDays(4),
       unit = TimeUnit.DAYS,
       initialDelay = 2,
       delay = 5

@@ -72,9 +72,7 @@ open class NewsScanService(
         log.debug {
           "Checking updates $now..."
         }
-        val documents = documentRepository
-          .findByLastUpdateDateBetween(now - startPeriod, now - endPeriod)
-        newsService.checkForUpdates(documents)
+        newsService.checkForUpdates(now - startPeriod, now - endPeriod)
       } catch (e: Throwable) {
         log.error("Error during update: ", e)
       }

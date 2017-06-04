@@ -57,8 +57,10 @@ open class NewsService(
   }
 
   @Transactional
-  open fun checkForUpdates(documentEntities: List<DocumentEntity>) {
-    log.info("Checking for updates...")
+  open fun checkForUpdates(startDate: LocalDate, endDate: LocalDate) {
+    log.info("Checking for updates in range $startDate to $endDate...")
+    val documentEntities = documentRepository
+      .findByLastUpdateDateBetween(startDate, endDate)
     val rawDocuments = documentEntities
       .map {
         newsReader.getDocumentById(it.id)
