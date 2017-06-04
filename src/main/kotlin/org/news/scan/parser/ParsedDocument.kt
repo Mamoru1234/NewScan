@@ -1,8 +1,10 @@
-package org.news.scan.dto
+package org.news.scan.parser
 
 import java.time.LocalDate
 
-data class Document(
+/**
+ */
+data class ParsedDocument(
   val id: String,
   val creationDate: LocalDate,
   val content: String

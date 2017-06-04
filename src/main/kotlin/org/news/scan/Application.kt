@@ -1,23 +1,23 @@
 package org.news.scan
 
-import org.news.scan.service.NewsScanService
 import org.springframework.boot.CommandLineRunner
 import org.springframework.boot.SpringApplication
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.ComponentScan
-import org.springframework.scheduling.annotation.EnableScheduling
+import org.springframework.data.jpa.repository.config.EnableJpaRepositories
 
 @SpringBootApplication
-@EnableScheduling
+@EnableJpaRepositories
 @ComponentScan
 open class ApplicationConfig {
-    @Bean
-    open fun init(newsScanService: NewsScanService) = CommandLineRunner {
-//        newsScanService.scheduleScan(12)
-    }
+
+  @Bean
+  open fun run() = CommandLineRunner {
+//    println(documentRepository.findOne(UUID.randomUUID()))
+  }
 }
 
 fun main(args: Array<String>) {
-    SpringApplication.run(ApplicationConfig::class.java)
+  SpringApplication.run(ApplicationConfig::class.java)
 }
