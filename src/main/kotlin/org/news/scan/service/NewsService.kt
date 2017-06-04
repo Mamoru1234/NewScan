@@ -1,5 +1,6 @@
 package org.news.scan.service
 
+import org.news.scan.config.NewsScanConfig
 import org.news.scan.dao.DocumentRepository
 import org.news.scan.entity.DocumentEntity
 import org.news.scan.extension.logger
@@ -14,12 +15,12 @@ import java.time.LocalDate
 @Service
 open class NewsService(
   val documentRepository: DocumentRepository,
-  val newsParser: NewsParser
+  val newsParser: NewsParser,
+  val newsScanConfig: NewsScanConfig
 ) {
   companion object {
     val log by logger()
   }
-  val offsetLimit = Int.MAX_VALUE
 
   @Transactional
   open fun checkForNewDocuments(latestDate: LocalDate) {
@@ -39,7 +40,7 @@ open class NewsService(
         .filter { it.creationDate < latestDate }
         .findFirst()
       documentRepository.save(documentEntities)
-    } while (!olderDocument.isPresent && !documents.isEmpty() && offset <= offsetLimit)
+    } while (!olderDocument.isPresent && !documents.isEmpty() && offset <= newsScanConfig.offsetLimit)
     log.info("Finished")
   }
 
