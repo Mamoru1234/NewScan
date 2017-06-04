@@ -39,7 +39,7 @@ open class BrovaryNewsReader : NewsReader {
       .get()
 //        TODO Error handling
     val dateLine = documentPage.select(DATE_LINE_SELECTOR).last().text()
-    val content = documentPage.select(CONTENT_SELECTOR).last().text()
+    val content = documentPage.select(CONTENT_SELECTOR).last().html()
     return RawDocument(
       creationDate = parseDateLine(dateLine),
       content = content,
