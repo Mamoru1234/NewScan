@@ -1,13 +1,14 @@
 package org.news.scan.reader
 
-import org.bitbucket.cowwoc.diffmatchpatch.DiffMatchPatch
 import org.junit.Test
+import java.time.LocalDate
+import java.time.Period
 
 /**
  */
 class DiffTest {
   @Test
   fun testDiff() {
-    println(DiffMatchPatch().diffMain("test\ntemp", "test1\nmp"))
+    println(LocalDate.now().minus(Period.ofDays(0)))
   }
 }

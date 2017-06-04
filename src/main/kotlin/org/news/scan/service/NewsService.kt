@@ -64,6 +64,7 @@ open class NewsService(
         newsReader.getDocumentById(it.id)
       }
     compareAndUpdate(documentEntities, rawDocuments)
+    log.info("Update finished")
   }
 
   fun compareAndUpdate(
