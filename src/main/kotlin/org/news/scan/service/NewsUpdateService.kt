@@ -8,6 +8,7 @@ import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Sort
 import org.springframework.stereotype.Component
 import java.time.LocalDate
+import java.time.Period
 import java.util.concurrent.Executors
 import java.util.concurrent.ScheduledExecutorService
 import java.util.concurrent.TimeUnit
@@ -30,7 +31,7 @@ open class NewsScanService(
   companion object {
     val log by logger()
   }
-  val timePeriods = newsScanConfig.timePeriods
+  val priorityConfig = newsScanConfig.priorityConfig
   val scheduler: ScheduledExecutorService = Executors
     .newScheduledThreadPool(Priority.values().size + 1)
 
@@ -40,16 +41,16 @@ open class NewsScanService(
       this::checkForNewDocuments,
       0, 1, TimeUnit.HOURS
     )
-
-    scheduler.scheduleWithFixedDelay(
-      createDocumentsUpdateTask(Priority.HIGH),
-      30, 10, TimeUnit.MINUTES
-    )
-
-    scheduler.scheduleWithFixedDelay(
-      createDocumentsUpdateTask(Priority.LOW),
-      2, 5, TimeUnit.HOURS
-    )
+    Priority.values().forEach {
+      val (
+        startPeriod, endPeriod, unit,
+        initialDelay, delay
+        ) = priorityConfig[it]!!
+      scheduler.scheduleWithFixedDelay(
+        createDocumentsUpdateTask(startPeriod, endPeriod),
+        initialDelay, delay, unit
+      )
+    }
   }
 
   fun checkForNewDocuments() {
@@ -64,8 +65,7 @@ open class NewsScanService(
     }
   }
 
-  fun createDocumentsUpdateTask(priority: Priority): () -> Unit {
-    val (startPeriod, endPeriod) = timePeriods[priority]!!
+  fun createDocumentsUpdateTask(startPeriod: Period, endPeriod: Period): () -> Unit {
     return {
       try {
         val now = LocalDate.now()

@@ -20,8 +20,8 @@ EOF
 
 echo "-------------------- creating qualification database"
 
-# Create qualification database
-su postgres -c "createdb -E UTF8 -T template0 --locale=en_US.utf8 qualification"
+# Create semi_final database
+su postgres -c "createdb -E UTF8 -T template0 --locale=en_US.utf8 semi_final"
 
 echo "Changing password..."
 su postgres -c "psql -c \"ALTER USER postgres PASSWORD 'NewsScan2017'\""
