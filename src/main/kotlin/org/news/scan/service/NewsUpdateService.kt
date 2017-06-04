@@ -11,7 +11,6 @@ import java.time.LocalDate
 import java.time.Period
 import java.util.concurrent.Executors
 import java.util.concurrent.ScheduledExecutorService
-import java.util.concurrent.TimeUnit
 import javax.annotation.PostConstruct
 import javax.annotation.PreDestroy
 
@@ -32,6 +31,8 @@ open class NewsScanService(
     val log by logger()
   }
   val priorityConfig = newsScanConfig.priorityConfig
+  val checkDelay = newsScanConfig.checkDelay
+  val checkUnit = newsScanConfig.checkUnit
   val scheduler: ScheduledExecutorService = Executors
     .newScheduledThreadPool(Priority.values().size + 1)
 
@@ -39,7 +40,7 @@ open class NewsScanService(
   fun init() {
     scheduler.scheduleWithFixedDelay(
       this::checkForNewDocuments,
-      0, 1, TimeUnit.HOURS
+      0, checkDelay, checkUnit
     )
     Priority.values().forEach {
       val (

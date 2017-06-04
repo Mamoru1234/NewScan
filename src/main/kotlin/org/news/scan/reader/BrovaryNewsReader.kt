@@ -4,6 +4,7 @@ import org.jsoup.Jsoup
 import org.news.scan.extension.debug
 import org.news.scan.extension.logger
 import org.news.scan.extension.trace
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty
 import org.springframework.stereotype.Component
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
@@ -28,6 +29,7 @@ private fun parseDateLine(line:String):LocalDate {
   return LocalDate.parse(dateString, FORMATTER)
 }
 
+@ConditionalOnProperty("news.scan.reader", havingValue = "brovary")
 @Component
 open class BrovaryNewsReader : NewsReader {
   companion object {

@@ -21,6 +21,9 @@ data class PriorityScheduleValues(
 open class NewsScanConfig(
   var offsetLimit: Int = Int.MAX_VALUE,
   var pageSize: Int = 10,
+  var checkDelay: Long = 1,
+  var checkUnit: TimeUnit = TimeUnit.HOURS,
+
   var priorityConfig: Map<Priority, PriorityScheduleValues> = mapOf(
     Priority.HIGH to PriorityScheduleValues(
       startPeriod = Period.ofDays(3),
