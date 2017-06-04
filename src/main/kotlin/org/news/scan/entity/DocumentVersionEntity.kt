@@ -1,5 +1,6 @@
 package org.news.scan.entity
 
+import org.news.scan.dto.DocumentVersionDto
 import java.time.LocalDate
 import java.util.*
 import javax.persistence.*
@@ -24,4 +25,10 @@ data class DocumentVersionEntity(
   @JoinColumn(name = "fk_document_id")
   var document: DocumentEntity? = null
 
-)
+) {
+  fun toDto() = DocumentVersionDto(
+    id = id,
+    version = version,
+    date = date
+  )
+}

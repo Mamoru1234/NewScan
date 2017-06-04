@@ -27,4 +27,4 @@ echo "Changing password..."
 su postgres -c "psql -c \"ALTER USER postgres PASSWORD 'NewsScan2017'\""
 
 cd /vagrant/
-#./gradlew :bootRun
+./gradlew :bootRun

@@ -1,5 +1,6 @@
 package org.news.scan.entity
 
+import org.news.scan.dto.DocumentDto
 import java.time.LocalDate
 import java.util.*
 import javax.persistence.*
@@ -16,5 +17,10 @@ data class DocumentEntity(
 
   @OneToMany(fetch = FetchType.EAGER, mappedBy = "document")
   var versions: List<DocumentVersionEntity>? = null
-
-)
+) {
+  fun toDto(): DocumentDto = DocumentDto(
+    id = id,
+    lastUpdateDate = lastUpdateDate,
+    versions = versions?.map { it.id } ?: emptyList()
+  )
+}
